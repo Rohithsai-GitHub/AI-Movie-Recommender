@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Streaming Service</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="mb-4">Movie Streaming Service</h1>
+
+        <!-- Search & Filter Form -->
+        <form method="GET" action="/" class="row g-2 align-items-center mb-4">
+            <div class="col-md-6">
+                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search movies by title...">
+            </div>
+            <div class="col-md-4">
+                <select name="genre" class="form-select">
+                    <option value="">All Genres</option>
+                    {% for genre in all_genres %}
+                        <option value="{{ genre }}" {% if genre == genre_filter %}selected{% endif %}>
+                            {{ genre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+
+        <!-- Movies Card Layout -->
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for movie in movies %}
+                <div class="col">
+                    <div class="card h-100">
+                        <!-- Placeholder Image -->
+                        <img src="https://via.placeholder.com/300x180.png?text={{ movie['title'] | urlencode }}" class="card-img-top" alt="{{ movie['title'] }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie['title'] }}</h5>
+                            <p class="card-text">{{ movie['genres'] }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('movie_detail', movie_id=movie['movieId']) }}" class="btn btn-sm btn-primary">Watch Now</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Improved Pagination -->
+        {% if total_pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=page-1) }}" tabindex="-1">Previous</a>
+                </li>
+
+                <!-- Page Numbers with Ellipses -->
+                {% for p in pagination_pages %}
+                    {% if p == "..." %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% else %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=p) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next Button -->
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=page+1) }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
