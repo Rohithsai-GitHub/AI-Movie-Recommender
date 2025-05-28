@@ -1,5 +1,3 @@
-## 📄 README: Movie Recommendation System
-
 # 🎬 Movie Recommendation System
 
 **Author:** Rohith Sai
