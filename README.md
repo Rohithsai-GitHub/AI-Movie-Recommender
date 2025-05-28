@@ -1,7 +1,3 @@
-[![Movie Recommendation System ...](https://images.openai.com/thumbnails/93ffea57647b82c263515337decb7c80.jpeg)](https://medium.com/%40akriti.upadhyay/how-to-create-a-vector-based-movie-recommendation-system-using-qdrant-db-e026554f49ec)
-
----
-
 ## 📄 README: Movie Recommendation System
 
 # 🎬 Movie Recommendation System
