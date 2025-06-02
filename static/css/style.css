@@ -1,0 +1,8 @@
+.card-img-top {
+    height: 300px;
+    object-fit: cover;
+}
+
+.pagination .page-item.disabled .page-link {
+    pointer-events: none;
+}

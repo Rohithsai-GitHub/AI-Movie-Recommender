@@ -1,83 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Movie Streaming Service</title>
-    <!-- Bootstrap CSS for styling -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>MovieStream</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
-    <div class="container my-4">
-        <h1 class="mb-4">Movie Streaming Service</h1>
+    <div class="container py-4">
+        <h1 class="text-center mb-4">MovieStream</h1>
 
-        <!-- Search & Filter Form -->
-        <form method="GET" action="/" class="row g-2 align-items-center mb-4">
-            <div class="col-md-6">
-                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search movies by title...">
-            </div>
-            <div class="col-md-4">
-                <select name="genre" class="form-select">
-                    <option value="">All Genres</option>
-                    {% for genre in all_genres %}
-                        <option value="{{ genre }}" {% if genre == genre_filter %}selected{% endif %}>
-                            {{ genre }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </div>
-        </form>
-
-        <!-- Movies Card Layout -->
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4">
             {% for movie in movies %}
-                <div class="col">
-                    <div class="card h-100">
-                        <!-- Placeholder Image -->
-                        <img src="https://via.placeholder.com/300x180.png?text={{ movie['title'] | urlencode }}" class="card-img-top" alt="{{ movie['title'] }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ movie['title'] }}</h5>
-                            <p class="card-text">{{ movie['genres'] }}</p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{{ url_for('movie_detail', movie_id=movie['movieId']) }}" class="btn btn-sm btn-primary">Watch Now</a>
-                        </div>
+            <div class="col">
+                <div class="card h-100">
+                    {% if movie.poster_url %}
+                    <img
+                      src="{{ movie.poster_url }}"
+                      class="card-img-top"
+                      alt="{{ movie.title_x }}"
+                    />
+                    {% else %}
+                    <div
+                      class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                    >
+                        <span class="text-muted">No Image</span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ movie.title_x }}</h5>
+                        <p class="card-text">
+                            <strong>Rating:</strong> {{ movie.vote_average|round(1) }}<br />
+                            <strong>Genre:</strong> {{ movie.genres_display }}<br />
+                            <a
+                              href="/recommend/{{ movie.id }}"
+                              class="btn btn-primary mt-2"
+                              >View Similar</a
+                            >
+                        </p>
                     </div>
                 </div>
+            </div>
             {% endfor %}
         </div>
 
-        <!-- Improved Pagination -->
-        {% if total_pages > 1 %}
         <nav aria-label="Page navigation" class="mt-4">
             <ul class="pagination justify-content-center">
-                <!-- Previous Button -->
-                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-                    <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=page-1) }}" tabindex="-1">Previous</a>
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a
+                      class="page-link"
+                      href="{% if page > 1 %}/?page={{ page - 1 }}{% else %}#{% endif %}"
+                      tabindex="-1"
+                      >Previous</a
+                    >
                 </li>
 
-                <!-- Page Numbers with Ellipses -->
+                {% if page > 3 %}
+                <li class="page-item">
+                    <a class="page-link" href="/?page=1">1</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                {% endif %}
+
                 {% for p in pagination_pages %}
-                    {% if p == "..." %}
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
-                    {% else %}
-                        <li class="page-item {% if p == page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=p) }}">{{ p }}</a>
-                        </li>
-                    {% endif %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a
+                      class="page-link {% if p == page %}disabled{% endif %}"
+                      href="{% if p != page %}/?page={{ p }}{% else %}#{% endif %}"
+                      >{{ p }}</a
+                    >
+                </li>
                 {% endfor %}
 
-                <!-- Next Button -->
-                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-                    <a class="page-link" href="{{ url_for('index', q=query, genre=genre_filter, page=page+1) }}">Next</a>
+                {% if page < total_pages - 2 %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="/?page={{ total_pages }}">{{ total_pages }}</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                    <a
+                      class="page-link"
+                      href="{% if page < total_pages %}/?page={{ page + 1 }}{% else %}#{% endif %}"
+                      >Next</a
+                    >
                 </li>
             </ul>
         </nav>
-        {% endif %}
     </div>
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
