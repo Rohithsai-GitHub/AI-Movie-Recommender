@@ -104,7 +104,7 @@ Before you begin, make sure you have:
 
 4. **Set Up Environment Variables**
 
-   * Copy `.env.example` to `.env` (if provided), or create a new `.env` file in the project root.
+   * create a new `.env` file in the project root.
    * Add your TMDB API key:
 
      ```
@@ -133,13 +133,13 @@ By default, the Flask development server runs on `http://127.0.0.1:5000/`. Visit
 ```
 AI-Movie-Recommender/
 ├─ app.py                         # Main Flask application
-├─ get_posters.py                 # Offline script to build poster_url column
+├─ get_posters.py                 # Offline script to build poster_url column for understanding purpose
 ├─ recommender.py                 # HybridRecommender (TF-IDF + Cosine Similarity)
 ├─ tmdb_helper.py                 # (Legacy; offline use or reference)
 ├─ .env                           # Contains TMDB_API_KEY
 ├─ requirements.txt               # Python dependencies (Flask, Pandas, scikit-learn, caching, compress)
 ├─ dataset/
-│   └─ tmdb_dataset.csv   # Pre-cleaned
+│   └─ tmdb_dataset.csv           # Pre-cleaned
 ├─ static/
 │   └─ css/
 │       └─ style.css             # Custom CSS for cards, pagination, etc.
@@ -174,7 +174,7 @@ AI-Movie-Recommender/
 ### `get_posters.py`
 
 * **Offline script** that reads `tmdb_dataset_with_poster_id.csv`, loops through each `poster_id`, calls TMDB’s `/movie/{id}/images` endpoint, picks the first poster’s `file_path`, and writes out `poster_url` to `dataset/tmdb_dataset_with_posters.csv`.
-* Run once before deployment to avoid runtime API calls.
+* Run once before and rename it to original dataset name for deployment to avoid runtime API calls.
 
 ### `templates/`
 
@@ -202,7 +202,7 @@ Place it in a file named `.env` at the project root. The application itself does
 
 ---
 
-## Want to Deployment (Render.com)
+## Want to Deploy (Render.com)
 
 1. **Add `requirements.txt` & `Procfile`**
 
@@ -234,7 +234,7 @@ Once deployed, you’ll see a live URL (e.g. `https://movierecommender-zrtf.onre
 
 1. **Offline Poster Pre‐Fetch**
 
-   * All poster URLs are computed once and stored in `tmdb_dataset_with_posters.csv`. No runtime API calls means faster page loads and zero rate‐limit concerns.
+   * All poster URLs are computed once and stored in `tmdb_dataset_with_posters.csv`. No runtime API calls means faster page loads and zero rate‐limit concerns. Note: I have already added poster url's in the provided dataset. Posters.py is for understanding.
 
 2. **Precomputed Similarity Matrix**
 
