@@ -111,24 +111,7 @@
     <script>
       const searchInput = document.getElementById('search-input');
       const resultsList = document.getElementById('search-results');
-      const url = `https://movierecommender-zrtf.onrender.com`; // Replace with your Render URL
-      const interval = 600000; 
 
-//Reloader Function
-function reloadWebsite() {
-  axios.get(url)
-    .then(response => {
-      console.log(`Reloaded at ${new Date().toISOString()}: Status Code ${response.status}`);
-    })
-    .catch(error => {
-      console.error(`Error reloading at ${new Date().toISOString()}:`, error.message);
-    });
-}
-
-setInterval(reloadWebsite, interval);
-      
-    
-    
       searchInput.addEventListener('input', () => {
         const query = searchInput.value.trim();
         if (!query) {
